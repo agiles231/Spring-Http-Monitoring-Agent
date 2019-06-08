@@ -1,4 +1,4 @@
-#A java agent that monitors Spring's HTTP activities
+# A java agent that monitors Spring's HTTP activities
 This agent will report metrics relating to HTTP requests and responses.
 Provided metrics are:
 * Nothing so far
