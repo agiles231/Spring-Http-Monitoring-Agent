@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/agiles231/Tomcat-Http-Monitoring-Agent.svg?branch=master)](https://travis-ci.com/agiles231/Tomcat-Http-Monitoring-Agent)
+
 # A java agent that monitors Spring's HTTP activities
 This agent will report metrics relating to HTTP requests and responses.
 Provided metrics are:
