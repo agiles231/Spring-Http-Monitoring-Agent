@@ -25,7 +25,7 @@ The resources in directory ./test-resources are either:
 ## Build
 To build this agent:
 
-`mvn package
+`mvn package`
 
 ## Deployment
 To deploy this agent:
