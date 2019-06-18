@@ -23,22 +23,27 @@
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-analysis</artifactId>
-            <version>5.0.3</version>
+            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-util</artifactId>
-            <version>5.0.3</version>
+            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-tree</artifactId>
-            <version>5.0.3</version>
+            <version>7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
+            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
-            <version>5.0.3</version>
+            <version>7.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
         <dependency>
@@ -63,12 +68,12 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
-                    <!--<descriptorRefs>
+                    <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>-->
+                    </descriptorRefs>
                     <archive>
                         <index>true</index>
                         <manifest>
@@ -84,14 +89,14 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <!--<id>make-assembly</id>-->
+                        <id>make-assembly</id>
                         <!--this is used for inheritance merges-->
-                        <!--<phase>package</phase>-->
+                        <phase>package</phase>
                         <!--append to the packaging phase.-->
-                        <!--<goals>-->
-                            <!--<goal>single</goal>-->
+                        <goals>
+                            <goal>single</goal>
                             <!--goals == mojos -->
-                        <!--</goals>-->
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -101,6 +106,8 @@
                 <version>2.9</version>
                 <configuration>
                     <!--<argLine>-javaagent:"${project.build.directory}\tomcat-http-monitoring-agent.jar"</argLine>-->
+                    <!--<argLine>-verbose:class</argLine>-->
+                    <forkMode>always</forkMode>
                 </configuration>
                 <executions>
                     <execution>

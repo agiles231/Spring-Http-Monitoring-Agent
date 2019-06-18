@@ -19,6 +19,5 @@ public class HttpServletTransformerTest {
         ClassFileTransformer httpServletTransformer = new HttpServletTransformer();
         byte[] outputBytes = httpServletTransformer.transform(null, "javax/servlet/http/HttpServlet", null
                 , null, inputBytes);
-        Assert.assertArrayEquals(inputBytes, outputBytes); // for now, assert no change, because we have made no change
     }
 }

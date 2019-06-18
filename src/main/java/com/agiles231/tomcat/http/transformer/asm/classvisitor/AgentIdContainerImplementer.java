@@ -1,4 +1,4 @@
-package com.agiles231.tomcat.http.transformer.asm;
+package com.agiles231.tomcat.http.transformer.asm.classvisitor;
 
 import com.agiles231.tomcat.http.agent.interfaces.AgentIdContainer;
 import org.objectweb.asm.ClassVisitor;
@@ -36,10 +36,10 @@ public class AgentIdContainerImplementer extends ClassVisitor implements Opcodes
         return interfaceName;
     }
     public String getGetterName() {
-        return "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return "getAgentId";
     }
     public String getSetterName() {
-        return "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+        return "setAgentId";
     }
     public void visitEnd() {
         MethodNode getterNode = new MethodNode(this.api, ACC_PUBLIC, getGetterName(), "()Ljava/lang/Long;", null, null);

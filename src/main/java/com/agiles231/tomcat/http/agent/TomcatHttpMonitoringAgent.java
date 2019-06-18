@@ -1,7 +1,9 @@
 package com.agiles231.tomcat.http.agent;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.agiles231.tomcat.http.transformer.HttpServletResponseTransformer;
+import com.agiles231.tomcat.http.transformer.HttpServletTransformer;
+import com.agiles231.tomcat.http.transformer.ServletOutputStreamTransformer;
+
 import java.lang.instrument.Instrumentation;
 import java.util.Map;
 import java.util.HashMap;
@@ -32,6 +34,9 @@ public class TomcatHttpMonitoringAgent {
     public static void premain(String agentArgs, Instrumentation inst) {
         System.out.println("Agent successfully loaded");
         init();
+        inst.addTransformer(new HttpServletTransformer());
+        inst.addTransformer(new ServletOutputStreamTransformer());
+        inst.addTransformer(new HttpServletResponseTransformer());
     }
 
     public static void agentmain(String agentArgs, Instrumentation inst) {
@@ -46,9 +51,17 @@ public class TomcatHttpMonitoringAgent {
     }
     public synchronized static void notifyRequestEnd(Long id) {
         Long timeEnd = System.currentTimeMillis();
-        requestEnds.put(id, timeEnd);
+        requestEnds.merge(id, timeEnd, (v1, v2) -> v1);
+        System.out.println("Total time for this request: " + getHttpRequestTime(id));
     }
 
+    public synchronized static void setContentLength(Long id, int length) {
+        responseSizes.put(id, Long.valueOf(length));
+    }
+
+    public synchronized static void writeByte(Long id) {
+        responseSizes.merge(id, 1l, (v1, v2) -> v1 + v2);
+    }
     public synchronized static void writeBytes(Long id, byte[] b) {
         responseSizes.merge(id, Long.valueOf(b.length), (v1, v2) -> v1 + v2);
     }
