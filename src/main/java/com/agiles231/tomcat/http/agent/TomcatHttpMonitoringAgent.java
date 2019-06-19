@@ -1,14 +1,16 @@
 package com.agiles231.tomcat.http.agent;
 
+import java.lang.instrument.Instrumentation;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+
 import com.agiles231.tomcat.http.transformer.ControllerTransformer;
 import com.agiles231.tomcat.http.transformer.HttpServletResponseTransformer;
 import com.agiles231.tomcat.http.transformer.HttpServletTransformer;
 import com.agiles231.tomcat.http.transformer.ServletOutputStreamTransformer;
-
-import java.lang.instrument.Instrumentation;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 
 public class TomcatHttpMonitoringAgent {
 
@@ -16,6 +18,9 @@ public class TomcatHttpMonitoringAgent {
     private static Map<Long, Long> requestStarts;
     private static Map<Long, Long> requestEnds;
     private static Map<Long, Long> responseSizes;
+    private static Lock requestStartsLock;
+    private static Lock requestEndsLock;
+    private static Lock responseSizesLock;
 
     public synchronized static void init() {
         if (currentId == null) {
@@ -23,12 +28,15 @@ public class TomcatHttpMonitoringAgent {
         }
         if (requestStarts == null) {
             requestStarts = new HashMap<>();
+            requestStartsLock = new ReentrantLock(true);
         }
         if (requestEnds == null) {
             requestEnds  = new HashMap<>();
+            requestEndsLock = new ReentrantLock(true);
         }
         if (responseSizes == null) {
             responseSizes = new HashMap<>();
+            responseSizesLock = new ReentrantLock(true);
         }
     }
 
@@ -45,51 +53,88 @@ public class TomcatHttpMonitoringAgent {
         throw new UnsupportedOperationException("This method is not yet supported. Attach to process statically.");
     }
 
-    public synchronized static Long notifyRequestStart() {
+    public static Long notifyRequestStart() {
         Long timeStart = System.currentTimeMillis();
+        requestStartsLock.lock();
         Long id = currentId++;
         requestStarts.put(id, timeStart);
+        requestStartsLock.unlock();
         return id;
     }
-    public synchronized static void notifyRequestEnd(Long id) {
+    public static void notifyRequestEnd(Long id) {
         Long timeEnd = System.currentTimeMillis();
+        requestEndsLock.lock();
         requestEnds.merge(id, timeEnd, (v1, v2) -> Math.max(v1, v2));
-        System.out.println("Total time for " + id + " request: " + getHttpRequestTime(id));
-        System.out.println("Total size for " + id + " response so far: " + getHttpResponseSize(id));
+        requestEndsLock.unlock();
+        //System.out.println("Total time for " + id + " request: " + getHttpRequestTime(id));
+        //System.out.println("Total size for " + id + " response so far: " + getHttpResponseSize(id));
     }
 
-    public synchronized static void writeNumBytes(Long id, int num) {
+    public static void writeNumBytes(Long id, int num) {
+        responseSizesLock.lock();
         responseSizes.merge(id, (long)num, (v1, v2) -> v1 + v2);
+        responseSizesLock.unlock();
     }
-    public synchronized static void writeBytes(Long id, byte[] b) {
+    public static void writeBytes(Long id, byte[] b) {
+        responseSizesLock.lock();
         responseSizes.merge(id, Long.valueOf(b.length), (v1, v2) -> v1 + v2);
+        responseSizesLock.unlock();
     }
 
-    public static synchronized Map<Long, Long> getHttpRequestStarts() {
-        return requestStarts;
+    public static Map<Long, Long> getHttpRequestStarts() {
+        requestStartsLock.lock();
+        Map<Long, Long> ret = new HashMap<>(requestStarts);
+        requestStartsLock.unlock();
+        return ret;
     }
-    public static synchronized Map<Long, Long> getHttpRequestEnds() {
-        return requestEnds;
+    public static Map<Long, Long> getHttpRequestEnds() {
+        requestEndsLock.lock();
+        Map<Long, Long> ret = new HashMap<>(requestEnds);
+        requestEndsLock.unlock();
+        return ret;
     }
-    public static synchronized Map<Long, Long> getRequestTimes() {
-        return requestStarts.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> {
-           return requestEnds.get(e.getKey()) - e.getValue() ;
-        }));
+    public static Map<Long, Long> getRequestTimes() {
+        requestStartsLock.lock();
+        requestEndsLock.lock();
+        Map<Long, Long> ret = requestStarts.entrySet().stream()
+        		.filter(e -> requestEnds.get(e) != null)
+        		.collect(Collectors.toMap(Map.Entry::getKey, e -> {
+				   return requestEnds.get(e.getKey()) - e.getValue() ;
+				}));
+        requestEndsLock.unlock();
+        requestStartsLock.unlock();
+        return ret;
     }
 
-    public static synchronized Map<Long, Long> getHttpResponseSizes() {
-        return responseSizes;
+    public static Map<Long, Long> getHttpResponseSizes() {
+        responseSizesLock.lock();
+        Map<Long, Long> ret = new HashMap<>(responseSizes);
+        responseSizesLock.unlock();
+        return ret;
     }
-    public static synchronized Long getHttpRequestStart(Long id) {
-        return requestStarts.get(id);
+    public static Long getHttpRequestStart(Long id) {
+        requestStartsLock.lock();
+        Long start = requestStarts.get(id);
+        requestStartsLock.unlock();
+        return start;
     }
-    public static synchronized Long getHttpRequestEnd(Long id) {
-        return requestEnds.get(id);
+    public static Long getHttpRequestEnd(Long id) {
+        requestEndsLock.lock();
+        Long end = requestEnds.get(id);
+        requestEndsLock.unlock();
+        return end;
     }
-    public static synchronized Long getHttpRequestTime(Long id) {
-        return (requestEnds.get(id) - requestStarts.get(id));
+    public static Long getHttpRequestTime(Long id) {
+        Long time = null;
+        if (getHttpRequestStart(id) != null && getHttpRequestEnd(id) != null) {
+			time = getHttpRequestEnd(id) - getHttpRequestStart(id);
+        }
+        return time;
     }
-    public static synchronized Long getHttpResponseSize(Long id) {
-        return responseSizes.get(id);
+    public static Long getHttpResponseSize(Long id) {
+        responseSizesLock.lock();
+        Long size = responseSizes.get(id);
+        responseSizesLock.unlock();
+        return size;
     }
 }
