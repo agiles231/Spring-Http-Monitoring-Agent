@@ -60,7 +60,6 @@ public class ControllerRequestMappingAnnotationExtractor extends ClassVisitor im
         return isController;
     }
     public Optional<List<String>> getPaths() {
-        System.out.println("Here I am: " + requestMappingAnnotationVisitor.map(r -> r.getPaths()).orElse(new LinkedList<>()));
         return requestMappingAnnotationVisitor.map(r -> r.getPaths());
     }
 }
