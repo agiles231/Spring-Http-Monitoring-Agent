@@ -36,7 +36,6 @@ public class ServletOutputStreamTransformer implements ClassFileTransformer {
         }
         if (className.equals(getServletOutputStreamName()) || containsServletOutputStream) {
             subClasses.add(className);
-            System.out.println("SOS: " + className);
             writer = new ClassWriter(reader, 0);
             ClassVisitor agentIdContainerImplementer = new AgentIdContainerImplementer(Opcodes.ASM7, writer, className, "agent_id");
             ClassVisitor servletOutputStreamWritePrintModifier = new ServletOutputStreamWriteAgentCallAdder(Opcodes.ASM7, agentIdContainerImplementer);

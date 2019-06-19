@@ -19,7 +19,7 @@ public class TomcatHttpMonitoringAgentTest {
         long actualTime = (endTime - startTime);
         System.out.println("Recorded time" + recordedTime);
         System.out.println("Actual time" + actualTime);
-        Assert.assertTrue(Math.abs(recordedTime - actualTime) < 100); // within 2 milliseconds
+        Assert.assertTrue(Math.abs(recordedTime - actualTime) < 50); // within 2 milliseconds
     }
 
     @Test

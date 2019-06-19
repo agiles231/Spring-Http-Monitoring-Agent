@@ -54,7 +54,7 @@ public class ServletOutputStreamWriteAgentCallAdderTest {
         int bytesSize = r.nextInt(1024);
         byte[] bytes = new byte[bytesSize];
         int off = 0;
-        int len = bytesSize;
+        int len = r.nextInt(bytesSize);
 
         writeByte.invoke(servletOutputStream, 0);
         Long size = TomcatHttpMonitoringAgent.getHttpResponseSize(id);
@@ -66,6 +66,6 @@ public class ServletOutputStreamWriteAgentCallAdderTest {
 
         writeBytes2.invoke(servletOutputStream, bytes, off, len);
         size = TomcatHttpMonitoringAgent.getHttpResponseSize(id);
-        Assert.assertEquals(1l + (2 * bytesSize), size.longValue());
+        Assert.assertEquals(1l + (long)(bytesSize + len), size.longValue());
     }
 }

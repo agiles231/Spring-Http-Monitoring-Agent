@@ -1,5 +1,6 @@
 package com.agiles231.tomcat.http.agent;
 
+import com.agiles231.tomcat.http.transformer.ControllerTransformer;
 import com.agiles231.tomcat.http.transformer.HttpServletResponseTransformer;
 import com.agiles231.tomcat.http.transformer.HttpServletTransformer;
 import com.agiles231.tomcat.http.transformer.ServletOutputStreamTransformer;
@@ -37,6 +38,7 @@ public class TomcatHttpMonitoringAgent {
         inst.addTransformer(new HttpServletTransformer());
         inst.addTransformer(new ServletOutputStreamTransformer());
         inst.addTransformer(new HttpServletResponseTransformer());
+        inst.addTransformer(new ControllerTransformer());
     }
 
     public static void agentmain(String agentArgs, Instrumentation inst) {
@@ -51,16 +53,13 @@ public class TomcatHttpMonitoringAgent {
     }
     public synchronized static void notifyRequestEnd(Long id) {
         Long timeEnd = System.currentTimeMillis();
-        requestEnds.merge(id, timeEnd, (v1, v2) -> v1);
-        System.out.println("Total time for this request: " + getHttpRequestTime(id));
+        requestEnds.merge(id, timeEnd, (v1, v2) -> Math.max(v1, v2));
+        System.out.println("Total time for " + id + " request: " + getHttpRequestTime(id));
+        System.out.println("Total size for " + id + " response so far: " + getHttpResponseSize(id));
     }
 
-    public synchronized static void setContentLength(Long id, int length) {
-        responseSizes.put(id, Long.valueOf(length));
-    }
-
-    public synchronized static void writeByte(Long id) {
-        responseSizes.merge(id, 1l, (v1, v2) -> v1 + v2);
+    public synchronized static void writeNumBytes(Long id, int num) {
+        responseSizes.merge(id, (long)num, (v1, v2) -> v1 + v2);
     }
     public synchronized static void writeBytes(Long id, byte[] b) {
         responseSizes.merge(id, Long.valueOf(b.length), (v1, v2) -> v1 + v2);
@@ -80,6 +79,12 @@ public class TomcatHttpMonitoringAgent {
 
     public static synchronized Map<Long, Long> getHttpResponseSizes() {
         return responseSizes;
+    }
+    public static synchronized Long getHttpRequestStart(Long id) {
+        return requestStarts.get(id);
+    }
+    public static synchronized Long getHttpRequestEnd(Long id) {
+        return requestEnds.get(id);
     }
     public static synchronized Long getHttpRequestTime(Long id) {
         return (requestEnds.get(id) - requestStarts.get(id));

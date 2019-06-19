@@ -18,7 +18,6 @@ public class ServletOutputStreamFlushAgentCallAdder extends ClassVisitor impleme
     public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         MethodVisitor mv = super.visitMethod(access, name, descriptor, signature, exceptions);
         if (name.equals("flush") && descriptor.equals("()V")) {
-            System.out.println("Found flush");
             foundFlush = true;
             mv = new FlushNotifyAgentEndAdder(this.api, mv);
         }
