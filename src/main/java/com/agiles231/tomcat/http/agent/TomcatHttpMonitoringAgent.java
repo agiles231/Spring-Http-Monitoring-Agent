@@ -7,10 +7,10 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import com.agiles231.tomcat.http.transformer.ControllerTransformer;
-import com.agiles231.tomcat.http.transformer.HttpServletResponseTransformer;
-import com.agiles231.tomcat.http.transformer.HttpServletTransformer;
-import com.agiles231.tomcat.http.transformer.ServletOutputStreamTransformer;
+import com.agiles231.tomcat.http.classtransformer.ControllerTransformer;
+import com.agiles231.tomcat.http.classtransformer.HttpServletResponseTransformer;
+import com.agiles231.tomcat.http.classtransformer.HttpServletTransformer;
+import com.agiles231.tomcat.http.classtransformer.ServletOutputStreamTransformer;
 
 public class TomcatHttpMonitoringAgent {
 
