@@ -12,6 +12,12 @@ import java.security.ProtectionDomain;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Modify all objects extending ServletOutputStream in 3 ways:
+ * 1) implement AgentIdContainer
+ * 2) during call of flush, call notifyRequestEnd on agent using agentId attached to object
+ * 3) all calls to write method (all 3 overloads) call agent's corresponding write methods to track bytes written
+ */
 public class ServletOutputStreamTransformer implements ClassFileTransformer {
     Set<String> subClasses;
 
@@ -43,11 +49,6 @@ public class ServletOutputStreamTransformer implements ClassFileTransformer {
             reader.accept(servletOutputStreamFlushModifier, 0);
             classfileBuffer = writer.toByteArray();
         }
-        /*
-            super.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
-            super.visitLdcInsn(HttpServletResponseTransformer.className + " called");
-            super.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
-         */
         return classfileBuffer;
     }
 }

@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 
+/**
+ * Will determine if class being visited is annotated with @RestController or @Controller.
+ * Will also extract the @RequestMapping value present upon the class if present.
+ */
 public class ControllerRequestMappingAnnotationExtractor extends ClassVisitor implements Opcodes {
     boolean isController;
     boolean isAnnotation;
@@ -55,9 +59,18 @@ public class ControllerRequestMappingAnnotationExtractor extends ClassVisitor im
         return av;
     }
 
+    /**
+     *
+     * @return true iff the visited class is annotated with Spring annotation @Controller or @RestController
+     */
     public boolean isController() {
         return isController;
     }
+
+    /**
+     *
+     * @return get all paths mapped by @RequestMapping at class level
+     */
     public Optional<List<String>> getPaths() {
         return requestMappingAnnotationVisitor.map(r -> r.getPaths());
     }

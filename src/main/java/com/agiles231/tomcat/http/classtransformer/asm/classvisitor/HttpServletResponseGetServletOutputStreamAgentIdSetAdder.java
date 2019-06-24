@@ -4,6 +4,16 @@ import com.agiles231.tomcat.http.classtransformer.asm.methodvisitor.GetServletOu
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
+/**
+ * Class visited must meet criteria:
+ * 1) be a HttpServletResponse object
+ * 2) have AgentIdContainer implemented
+ *
+ * ServletOutputStream must meet criteria:
+ * 1) have AgentIdContainer implemented
+ *
+ * Class visited will transfer id on object to ServletOutputStream object returned by getOutputStream method
+ */
 public class HttpServletResponseGetServletOutputStreamAgentIdSetAdder extends AgentIdContainerImplementer  {
     public HttpServletResponseGetServletOutputStreamAgentIdSetAdder(int i, ClassVisitor classVisitor, String className, String fieldName) {
         super(i, classVisitor, className, fieldName);

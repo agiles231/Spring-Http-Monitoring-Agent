@@ -6,6 +6,9 @@ import org.objectweb.asm.AnnotationVisitor;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Extracts the value of @RequestMapping annotation if present
+ */
 public class RequestMappingAnnotationVisitor extends AnnotationVisitor {
     RequestMappingArrayAnnotationVisitor av;
     public RequestMappingAnnotationVisitor(int api, AnnotationVisitor annotationVisitor) {
@@ -23,6 +26,10 @@ public class RequestMappingAnnotationVisitor extends AnnotationVisitor {
     }
 
 
+    /**
+     *
+     * @return list of all paths from annotation ("value" or "path")
+     */
     public List<String> getPaths() {
         if (av != null) {
             System.out.println("Found request mapping: " + av.getPaths().toString());
@@ -32,6 +39,9 @@ public class RequestMappingAnnotationVisitor extends AnnotationVisitor {
     }
 }
 
+/**
+ * Helps extract from the array
+ */
 class RequestMappingArrayAnnotationVisitor extends AnnotationVisitor {
     List<String> paths;
     public RequestMappingArrayAnnotationVisitor(int api, AnnotationVisitor annotationVisitor) {

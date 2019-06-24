@@ -11,6 +11,12 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 
+
+/**
+ * Find HttpServlet object and modify by changing service method in 2 ways:
+ * 1) Call notifyRequestStart on the agent
+ * 2) Using id returned by above method call, tuck in HttpServletResponse (parameter 2 of service method)
+ */
 public class HttpServletTransformer implements ClassFileTransformer {
 
     public String getHttpServletClassName() {

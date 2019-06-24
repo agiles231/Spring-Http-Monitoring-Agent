@@ -6,6 +6,11 @@ import com.agiles231.tomcat.http.classtransformer.asm.methodvisitor.WriteBytesOf
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
+/**
+ * Visited class must meet criteria:
+ * 1) Extend OutputStream
+ * 2) Implement AgentIdContainer
+ */
 public class ServletOutputStreamWriteAgentCallAdder extends ClassVisitor {
     public ServletOutputStreamWriteAgentCallAdder(int i, ClassVisitor classVisitor) {
         super(i, classVisitor);

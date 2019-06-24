@@ -7,6 +7,13 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodNode;
 
+/**
+ * Visited class must meet criteria:
+ * 1) Extend OutputStream
+ * 2) Implement AgentIdContainer
+ *
+ * Adds notifyRequestEnd call on agent during flush method
+ */
 public class ServletOutputStreamFlushAgentCallAdder extends ClassVisitor implements Opcodes {
     boolean foundFlush;
     public ServletOutputStreamFlushAgentCallAdder(int api, ClassVisitor classVisitor) {

@@ -7,6 +7,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Extracts all interfaces present on visited class
+ */
 public class InterfaceExtractor extends ClassVisitor {
     List<String> interfaces;
     public InterfaceExtractor(int api, ClassVisitor cv) {
@@ -19,6 +22,10 @@ public class InterfaceExtractor extends ClassVisitor {
         this.interfaces = Arrays.asList(interfaces);
     }
 
+    /**
+     *
+     * @return all interfaces extracted during visit
+     */
     public List<String> getInterfaces() {
         return Collections.unmodifiableList(interfaces);
     }

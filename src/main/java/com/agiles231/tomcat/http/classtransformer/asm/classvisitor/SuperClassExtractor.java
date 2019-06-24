@@ -3,6 +3,9 @@ package com.agiles231.tomcat.http.classtransformer.asm.classvisitor;
 
 import org.objectweb.asm.ClassVisitor;
 
+/**
+ * Extracts super class of visited class
+ */
 public class SuperClassExtractor extends ClassVisitor {
     String superClass;
     public SuperClassExtractor(int api, ClassVisitor cv) {
@@ -15,6 +18,10 @@ public class SuperClassExtractor extends ClassVisitor {
         this.superClass = superName;
     }
 
+    /**
+     *
+     * @return superclass name extracted during visit
+     */
     public String getSuperClass() {
         return superClass;
     }

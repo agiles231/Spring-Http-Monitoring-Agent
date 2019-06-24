@@ -3,6 +3,12 @@ package com.agiles231.tomcat.http.classtransformer.asm.classvisitor;
 
 import org.objectweb.asm.*;
 
+/**
+ * Adds 3 methods to visited class:
+ * 1) Method for viewing all statistics reported to agent
+ * 2) Method that generates form for viewing specific request/response
+ * 3) Method for viewing specific request/response (picked in above form)
+ */
 public class ControllerAgentViewMethodAdder extends ClassVisitor implements Opcodes {
     String className;
     String path;

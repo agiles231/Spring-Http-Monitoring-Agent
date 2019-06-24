@@ -5,6 +5,11 @@ import com.agiles231.tomcat.http.classtransformer.asm.methodvisitor.HttpServletS
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 
+/**
+ * Add notifyRequestStart call on agent to service method, transfer id to HttpServletResponse (parameter 2 of service).
+ *
+ * Requirements to avoid runtime error: HttpServletResponse object must implement AgentIdContainer
+ */
 public class HttpServletServiceAgentAdder extends ClassVisitor {
     public HttpServletServiceAgentAdder(int api, ClassVisitor cv) {
         super(api, cv);

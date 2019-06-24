@@ -3,6 +3,12 @@ package com.agiles231.tomcat.http.classtransformer.asm.methodvisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+/**
+ * Requirements:
+ * 1) visited class must implement AgentIdContainer
+ *
+ * Calls writeNumBytes method on agent with id present on this and arg of 1
+ */
 public class WriteByteAgentCallAdder extends MethodVisitor implements Opcodes {
     public WriteByteAgentCallAdder(int api, MethodVisitor methodVisitor) {
         super(api, methodVisitor);

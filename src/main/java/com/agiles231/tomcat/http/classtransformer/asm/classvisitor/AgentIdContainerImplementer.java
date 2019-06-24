@@ -6,6 +6,9 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.MethodNode;
 
+/**
+ * Any class visited will implement AgentIdContainer
+ */
 public class AgentIdContainerImplementer extends ClassVisitor implements Opcodes {
     private final String fieldName;
     private final String interfaceName;

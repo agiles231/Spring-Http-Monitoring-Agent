@@ -11,6 +11,12 @@ import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 
+/**
+ * Finds all objects that implement the HttpServletResponse interface and performs 2 actions upon them:
+ * 1) Implement AgentIdContainer
+ * 2) transfer the agentId present on the object to the ServletOutputStream just before returning the
+ * ServletOutputStream object
+ */
 public class HttpServletResponseTransformer implements ClassFileTransformer {
     public static String className;
     public String getHttpServletResponseClassName() {
